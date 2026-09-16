@@ -71,11 +71,11 @@ The **APB-Interfaced SPI Master Core** bridges an on-chip register access bus to
                 │          │          │
               SCLK        MOSI       SS_n (MISO in)
 ```
-##2. Why APB-Based SPI?
+#2. Why APB-Based SPI?
 
 SPI is an unbuffered, unaddressed physical interface that lacks an intrinsic software programming model. Combining it with an AMBA APB3 slave wrapper introduces a memory-mapped programming model:InterfaceProtocolPrimary PurposeHost InterfaceAMBA APB3Memory-mapped register writes, control word configuration, baud rate selection, and interrupt handling.Line InterfaceSPISynchronous, full-duplex serial data transmission to external flash, ADCs, DACs, and sensors.
 
-##3. Overall Architecture
+#3. Overall Architecture
 ```text
 The core partitions logic into four modular, testable RTL blocks:
                               APB MASTER (CPU / DMA)
