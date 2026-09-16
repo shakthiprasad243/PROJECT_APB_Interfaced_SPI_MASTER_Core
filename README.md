@@ -45,3 +45,46 @@ A fully synthesizable **AMBA APB3 to SPI (Serial Peripheral Interface)** bridgin
 ## 1. Project Overview
 
 The **APB-Based SPI Controller** bridges an internal host processor bus to an off-chip SPI bus.
+
+APB BUS
+               │
+      ┌────────▼─────────┐
+      │  SPI CONTROLLER  │
+      │ ┌──────────────┐ │
+      │ │ APB Slave    │ │
+      │ │ Interface    │ │
+      │ └──────┬───────┘ │
+      │        │         │
+      │   ┌────┴────┐    │
+      │   ▼         ▼    │
+      │  Baud     Slave  │
+      │  Rate     Select │
+      │  Gen      Gen    │
+      │   │         │    │
+      │   └────┬────┘    │
+      │        ▼         │
+      │ ┌──────────────┐ │
+      │ │ SPI Shifter  │ │
+      │ └──────────────┘ │
+      └───────┬─┬─┬──────┘
+              │ │ │
+         SCLK MOSI MISO SS
+
+ The APB master manages configuration, baud rates, and payloads by reading and writing internal memory-mapped registers. The SPI controller offloads serial-to-parallel translation, clock division, and chip-select line management.
+
+---
+
+## 2. Why APB-Based SPI?
+
+SPI lacks an inherent software programming model or memory bus interface. Integrating an APB slave front-end provides standard CPU read/write access:
+
+| Interface | Protocol | Primary Purpose |
+|:---|:---|:---|
+| **Host Side** | **AMBA APB3** | Register programming, baud config, transmit/receive FIFO/buffer access, status monitoring |
+| **Line Side** | **SPI** | Synchronous, full-duplex serial transmission to external sensors, memories, and codecs |
+
+---
+
+## 3. Overall Architecture
+
+The core partitions logic into four isolated, specialized blocks:
