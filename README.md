@@ -71,11 +71,11 @@ The **APB-Interfaced SPI Master Core** bridges an on-chip register access bus to
                 │          │          │
               SCLK        MOSI       SS_n (MISO in)
 ```
-#2. Why APB-Based SPI?
+##2. Why APB-Based SPI?
 
 SPI is an unbuffered, unaddressed physical interface that lacks an intrinsic software programming model. Combining it with an AMBA APB3 slave wrapper introduces a memory-mapped programming model:InterfaceProtocolPrimary PurposeHost InterfaceAMBA APB3Memory-mapped register writes, control word configuration, baud rate selection, and interrupt handling.Line InterfaceSPISynchronous, full-duplex serial data transmission to external flash, ADCs, DACs, and sensors.
 
-#3. Overall Architecture
+##3. Overall Architecture
 ```text
 The core partitions logic into four modular, testable RTL blocks:
                               APB MASTER (CPU / DMA)
@@ -110,13 +110,13 @@ The core partitions logic into four modular, testable RTL blocks:
        MOSI         MISO         SCLK          SS_n            PRDATA
      (Output)      (Input)     (Output)      (Output)         (To APB)
 ```
-APB Slave Interface: Decodes read/write cycles, latches register writes, asserts PREADY, and formats interrupt lines.
+- APB Slave Interface: Decodes read/write cycles, latches register writes, asserts PREADY, and formats interrupt lines.
 
-Baud Rate Generator: Divides the peripheral clock PCLK to produce the serial shift clock SCLK along with single-cycle sampling/shifting strobes.
+- Baud Rate Generator: Divides the peripheral clock PCLK to produce the serial shift clock SCLK along with single-cycle sampling/shifting strobes.
 
-Slave Select Generator: Controls active-low target select lines (SS_n), guarantees hold/setup margins, and flags active transfers via tip.
+- Slave Select Generator: Controls active-low target select lines (SS_n), guarantees hold/setup margins, and flags active transfers via tip.
 
-SPI Shifter: Hosts the parallel-load serializer and serial-in deserializer to perform full-duplex transfers according to selected polarity and phase.
+- SPI Shifter: Hosts the parallel-load serializer and serial-in deserializer to perform full-duplex transfers according to selected polarity and phase.
 
 #4. Master and Slave Roles
 
@@ -130,7 +130,7 @@ Understanding the protocol boundaries avoids interface confusion:
    +--------------------+               +--------------------+               +--------------------+
 ```
 
-On the APB Bus: The host CPU/DMA controller acts as the APB Master. The SPI controller acts as an APB Slave responding to read/write transactions.
+- On the APB Bus: The host CPU/DMA controller acts as the APB Master. The SPI controller acts as an APB Slave responding to read/write transactions.
 
-On the SPI Bus: The SPI controller functions as the SPI Master driving SCLK, SS_n, and MOSI. The peripheral behaves as the SPI Slave driving MISO.
+- On the SPI Bus: The SPI controller functions as the SPI Master driving SCLK, SS_n, and MOSI. The peripheral behaves as the SPI Slave driving MISO.
      
